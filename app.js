@@ -26,15 +26,20 @@ equal.addEventListener("click", () => {
     let inp_val = input.value;
     try {
         let solution = calculateBasicOperations(inp_val);
-        if (Number.isInteger(solution)) {
-            input.value = solution; // jo integer value hoi to direct display
+
+        // Display the solution or format it if it's a valid number
+        if (typeof solution === 'number') {
+            input.value = Number.isInteger(solution) ? solution : solution.toFixed(2);
         } else {
-            input.value = solution.toFixed(2); // baki decimal value hoi to 2 decimal sudhi display
+            // Display pop-up with error message if it's a string (error)
+            alert(solution);
         }
     } catch (err) {
+        // Catch any unexpected errors and show an alert
         alert(err.message);
     }
 });
+
 
 //clear button upar ni click event
 clear.addEventListener("click", () => (input.value = ""));
@@ -46,15 +51,20 @@ erase.addEventListener("click", () => {
 
 // Shunting Yard Algorithm
 function calculateBasicOperations(expression) {
-    const precedence = { '+': 1, '-': 1, '*': 2, '/': 2 };
-    const isOperator = (char) => ['+', '-', '*', '/'].includes(char);
+    const precedence = { '+': 1, '-': 1, '*': 2, '/': 2 , '%': 2};
+    const isOperator = (char) => ['+', '-', '*', '/','%'].includes(char);
     const isNumber = (char) => !isNaN(char);
 
     try {
         // Step 1: Tokenize the input
-        const tokens = expression.match(/(\d+\.?\d*|\+|\-|\*|\/|\(|\))/g);
+        const tokens = expression.match(/(\d+\.?\d*|\+|\-|\*|\/|\%|\(|\))/g);
         if (!tokens) {
-            throw new Error("Invalid expression");
+            throw new Error("Invalid expression: Empty input or invalid characters.");
+        }
+
+        // Check for invalid expressions before proceeding further
+        if (tokens[0] === '+' || tokens[0] === '-' || isOperator(tokens[tokens.length - 1])) {
+            throw new Error("Invalid expression: Expression cannot start or end with an operator.");
         }
 
         // Fix tokens for negative numbers
@@ -68,6 +78,13 @@ function calculateBasicOperations(expression) {
                 i++;
             } else {
                 fixedTokens.push(tokens[i]);
+            }
+        }
+
+        // Check for consecutive operators
+        for (let i = 0; i < fixedTokens.length - 1; i++) {
+            if (isOperator(fixedTokens[i]) && isOperator(fixedTokens[i + 1])) {
+                throw new Error("Invalid expression: Consecutive operators are not allowed.");
             }
         }
 
@@ -117,6 +134,7 @@ function calculateBasicOperations(expression) {
                     case '-': evaluationStack.push(a - b); break;
                     case '*': evaluationStack.push(a * b); break;
                     case '/': evaluationStack.push(a / b); break;
+                    case '%': evaluationStack.push(a % b); break;
                 }
             }
         });
