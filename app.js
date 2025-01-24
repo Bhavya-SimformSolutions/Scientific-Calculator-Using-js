@@ -1,4 +1,5 @@
 let equal_pressed = 0;
+let lastResult = null; // To store the result of the last calculation
 let button_input = document.querySelectorAll(".input-button");
 let input = document.getElementById("input");
 let equal = document.getElementById("equal");
@@ -9,44 +10,53 @@ window.onload = () => {
     input.value = "";
 };
 
-//bdha input buttons upar ni click event
+// Handle input buttons click event
 button_input.forEach((button_class) => {
     button_class.addEventListener("click", () => {
-        if (equal_pressed == 1) {
-            input.value = "";
-            equal_pressed = 0;
+        // If an expression was just evaluated, don't clear the input
+        if (equal_pressed === 1) {
+            equal_pressed = 0; // Allow further edits/appends to the current value
         }
-        input.value += button_class.value;
+        input.value += button_class.value; // Append the new input
     });
 });
 
-//equal button upar ni click event
+// Handle equal button click event
 equal.addEventListener("click", () => {
-    equal_pressed = 1;
     let inp_val = input.value;
+
+    // If there's a previous result and input starts with an operator, prepend the last result
+    if (lastResult !== null && /^[+\-*/%]/.test(inp_val)) {
+        inp_val = `${lastResult}${inp_val}`;
+    }
+
     try {
         let solution = calculateBasicOperations(inp_val);
 
-        // Display the solution or format it if it's a valid number
+        // If solution is valid, update lastResult and display
         if (typeof solution === 'number') {
+            lastResult = solution;
             input.value = Number.isInteger(solution) ? solution : solution.toFixed(2);
         } else {
             // Display pop-up with error message if it's a string (error)
             alert(solution);
         }
     } catch (err) {
-        // Catch any unexpected errors and show an alert
         alert(err.message);
     }
+
+    equal_pressed = 1; // Mark equal_pressed to allow appending to the last result
 });
 
+// Handle clear button click event
+clear.addEventListener("click", () => {
+    input.value = "";
+    lastResult = null; // Reset the last result
+});
 
-//clear button upar ni click event
-clear.addEventListener("click", () => (input.value = ""));
-
-//erase button upar ni click event
+// Handle erase button click event
 erase.addEventListener("click", () => {
-    input.value = input.value.substr(0, input.value.length - 1); // last character remove 
+    input.value = input.value.substr(0, input.value.length - 1); // Remove the last character
 });
 
 // Shunting Yard Algorithm
@@ -62,10 +72,10 @@ function calculateBasicOperations(expression) {
             throw new Error("Invalid expression: Empty input or invalid characters.");
         }
 
-        // Check for invalid expressions before proceeding further
+        // Check for invalid start or end of the expression
         if (
-            isOperator(tokens[0]) || // Starts with an operator
-            isOperator(tokens[tokens.length - 1]) // Ends with an operator
+            isOperator(tokens[0]) && tokens[0] !== '-' || // Only allow '-' at the start
+            isOperator(tokens[tokens.length - 1]) // Expression cannot end with an operator
         ) {
             throw new Error("Invalid expression: Cannot start or end with an operator.");
         }
@@ -77,6 +87,7 @@ function calculateBasicOperations(expression) {
                 tokens[i] === '-' &&
                 (i === 0 || tokens[i - 1] === '(' || isOperator(tokens[i - 1]))
             ) {
+                // Merge negative sign with the next number
                 fixedTokens.push(tokens[i] + tokens[i + 1]);
                 i++;
             } else {
@@ -84,10 +95,12 @@ function calculateBasicOperations(expression) {
             }
         }
 
-        // Check for consecutive operators
+        // Check for consecutive operators (excluding valid `-` for negative numbers)
         for (let i = 0; i < fixedTokens.length - 1; i++) {
             if (isOperator(fixedTokens[i]) && isOperator(fixedTokens[i + 1])) {
-                throw new Error("Invalid expression: Consecutive operators are not allowed.");
+                throw new Error(
+                    "Invalid expression: Consecutive operators are not allowed."
+                );
             }
         }
 
