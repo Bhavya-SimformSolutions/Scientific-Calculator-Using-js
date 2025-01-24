@@ -51,8 +51,8 @@ erase.addEventListener("click", () => {
 
 // Shunting Yard Algorithm
 function calculateBasicOperations(expression) {
-    const precedence = { '+': 1, '-': 1, '*': 2, '/': 2 , '%': 2};
-    const isOperator = (char) => ['+', '-', '*', '/','%'].includes(char);
+    const precedence = { '+': 1, '-': 1, '*': 2, '/': 2, '%': 2 };
+    const isOperator = (char) => ['+', '-', '*', '/', '%'].includes(char);
     const isNumber = (char) => !isNaN(char);
 
     try {
@@ -63,8 +63,11 @@ function calculateBasicOperations(expression) {
         }
 
         // Check for invalid expressions before proceeding further
-        if (tokens[0] === '+' || tokens[0] === '-' || isOperator(tokens[tokens.length - 1])) {
-            throw new Error("Invalid expression: Expression cannot start or end with an operator.");
+        if (
+            isOperator(tokens[0]) || // Starts with an operator
+            isOperator(tokens[tokens.length - 1]) // Ends with an operator
+        ) {
+            throw new Error("Invalid expression: Cannot start or end with an operator.");
         }
 
         // Fix tokens for negative numbers
@@ -88,11 +91,24 @@ function calculateBasicOperations(expression) {
             }
         }
 
+        // Check for mismatched parentheses
+        let openParentheses = 0;
+        for (const token of fixedTokens) {
+            if (token === '(') openParentheses++;
+            if (token === ')') openParentheses--;
+            if (openParentheses < 0) {
+                throw new Error("Invalid expression: Mismatched parentheses.");
+            }
+        }
+        if (openParentheses !== 0) {
+            throw new Error("Invalid expression: Mismatched parentheses.");
+        }
+
         let outputQueue = [];
         let operatorStack = [];
 
         // Step 2: Shunting-Yard Algorithm to convert to RPN
-        fixedTokens.forEach(token => {
+        fixedTokens.forEach((token) => {
             if (isNumber(token)) {
                 outputQueue.push(parseFloat(token));
             } else if (isOperator(token)) {
@@ -115,13 +131,17 @@ function calculateBasicOperations(expression) {
         });
 
         while (operatorStack.length) {
-            outputQueue.push(operatorStack.pop());
+            const op = operatorStack.pop();
+            if (op === '(' || op === ')') {
+                throw new Error("Invalid expression: Mismatched parentheses.");
+            }
+            outputQueue.push(op);
         }
 
         // Step 4: Evaluate the RPN expression
         let evaluationStack = [];
-        outputQueue.forEach(token => {
-            if (typeof token === 'number') {
+        outputQueue.forEach((token) => {
+            if (typeof token === "number") {
                 evaluationStack.push(token);
             } else if (isOperator(token)) {
                 const b = evaluationStack.pop();
@@ -130,17 +150,31 @@ function calculateBasicOperations(expression) {
                     throw new Error("Division by zero");
                 }
                 switch (token) {
-                    case '+': evaluationStack.push(a + b); break;
-                    case '-': evaluationStack.push(a - b); break;
-                    case '*': evaluationStack.push(a * b); break;
-                    case '/': evaluationStack.push(a / b); break;
-                    case '%': evaluationStack.push(a % b); break;
+                    case '+':
+                        evaluationStack.push(a + b);
+                        break;
+                    case '-':
+                        evaluationStack.push(a - b);
+                        break;
+                    case '*':
+                        evaluationStack.push(a * b);
+                        break;
+                    case '/':
+                        evaluationStack.push(a / b);
+                        break;
+                    case '%':
+                        evaluationStack.push(a % b);
+                        break;
                 }
             }
         });
 
-        return evaluationStack[0];
+        // Final validation
+        if (evaluationStack.length !== 1) {
+            throw new Error("Invalid expression: Unable to compute result.");
+        }
 
+        return evaluationStack[0];
     } catch (error) {
         return error.message; // Return the error message instead of throwing it
     }
