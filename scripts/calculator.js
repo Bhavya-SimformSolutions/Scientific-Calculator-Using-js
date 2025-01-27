@@ -88,8 +88,7 @@ class Calculator {
                 tan: "tan⁻¹",
                 sqrt: "x²",
                 log: "10ˣ",
-                ln: "eˣ",
-                pow: "ʸ√x"
+                ln: "eˣ"
             }
         };
 
