@@ -21,4 +21,6 @@ export function setupEventHandlers(calculator) {
     document.getElementById("factorial").addEventListener("click", () => calculator.handleFactorialButtonClick());
     document.getElementById("reciprocal").addEventListener("click", () => calculator.handleReciprocalButtonClick());
     document.getElementById("abs").addEventListener("click", () => calculator.handleAbsButtonClick());
+
+    document.addEventListener("keydown", (event) => calculator.handleKeyboardInput(event));
 }

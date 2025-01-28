@@ -171,6 +171,29 @@ class Calculator {
             this.input.value = `abs(${this.input.value})`;
         }
     }
+
+    handleKeyboardInput(event) {
+        const key = event.key;
+        const validKeys = "0123456789+-*/%^().";
+        const specialKeys = {
+            "Enter": "=",
+            "Backspace": "erase",
+            "Delete": "clear",
+            "Escape": "clear"
+        };
+
+        if (validKeys.includes(key)) {
+            this.handleInputButtonClick(key);
+        } else if (specialKeys[key]) {
+            if (specialKeys[key] === "=") {
+                this.handleEqualButtonClick();
+            } else if (specialKeys[key] === "erase") {
+                this.handleEraseButtonClick();
+            } else if (specialKeys[key] === "clear") {
+                this.handleClearButtonClick();
+            }
+        }
+    }
 }
 
 export default Calculator;
