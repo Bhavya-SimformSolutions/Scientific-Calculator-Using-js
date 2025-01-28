@@ -22,5 +22,9 @@ export function setupEventHandlers(calculator) {
     document.getElementById("reciprocal").addEventListener("click", () => calculator.handleReciprocalButtonClick());
     document.getElementById("abs").addEventListener("click", () => calculator.handleAbsButtonClick());
 
+    // Add event listener for keyboard input
     document.addEventListener("keydown", (event) => calculator.handleKeyboardInput(event));
+
+    // Add event listener for theme toggle
+    document.getElementById("theme-toggle-checkbox").addEventListener("change", () => calculator.handleThemeToggle());
 }

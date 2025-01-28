@@ -194,6 +194,27 @@ class Calculator {
             }
         }
     }
+
+    handleThemeToggle() {
+        const isChecked = document.getElementById('theme-toggle-checkbox').checked;
+        document.body.classList.toggle('dark-mode', isChecked);
+        document.querySelector('.calculator').classList.toggle('dark-mode', isChecked);
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            input.classList.toggle('dark-mode', isChecked);
+        });
+        document.querySelectorAll('input[type="button"]').forEach(button => {
+            button.classList.toggle('dark-mode', isChecked);
+        });
+        document.querySelectorAll('button#erase').forEach(button => {
+            button.classList.toggle('dark-mode', isChecked);
+        });
+        document.querySelectorAll('input[value="AC"]').forEach(button => {
+            button.classList.toggle('dark-mode', isChecked);
+        });
+        document.querySelectorAll('input[value="="]').forEach(button => {
+            button.classList.toggle('dark-mode', isChecked);
+        });
+    }
 }
 
 export default Calculator;

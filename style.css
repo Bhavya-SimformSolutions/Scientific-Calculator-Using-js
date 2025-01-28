@@ -11,6 +11,8 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  transition: background-color 0.3s;
+  flex-direction: column;
 }
 
 .calculator {
@@ -19,6 +21,8 @@ body {
   padding: 20px;
   border-radius: 15px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, color 0.3s;
+  margin-top: 20px; /* Add space between toggle button and calculator */
 }
 
 .display {
@@ -35,6 +39,7 @@ input[type="text"] {
   background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .buttons {
@@ -49,7 +54,7 @@ input[type="button"] {
   border: none;
   font-size: 18px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 /* Number buttons */
@@ -60,7 +65,6 @@ input[class="input-button"] {
 input[class="input-button"]:hover {
   background-color: #d0d0d0;
 }
-
 
 /* Clear and erase buttons */
 input[value="AC"] {
@@ -90,6 +94,7 @@ input[value="="] {
 input[value="="]:hover {
   background-color: #388e3c;
 }
+
 button#erase {
   background-color: #ff9800;
   color: #ffffff;
@@ -100,6 +105,107 @@ button#erase {
   border: none;
   border-radius: 10px;
 }
+
 button#erase:hover {
   background-color: #e68900;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #121212;
+  color: white;
+}
+
+.calculator.dark-mode {
+  background-color: #333;
+  color: white;
+}
+
+input[type="text"].dark-mode {
+  background-color: #444;
+  color: white;
+}
+
+input[type="button"].dark-mode {
+  background-color: #555;
+  color: white;
+}
+
+button#erase.dark-mode {
+  background-color: #ff9800; /* Retain color in dark mode */
+  color: #ffffff;
+}
+
+/* Retain button colors in dark mode */
+input[value="AC"].dark-mode {
+  background-color: #ff4d4d;
+  color: #ffffff;
+}
+
+input[value="="].dark-mode {
+  background-color: #4caf50;
+  color: #ffffff;
+}
+
+/* Theme Toggle Styles */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#theme-toggle-checkbox {
+  display: none; /* Hide the checkbox */
+}
+
+.theme-toggle-label {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 60px;
+  height: 30px;
+  background-color: #ccc;
+  border-radius: 15px;
+  cursor: pointer;
+  padding: 0 10px;
+  transition: background-color 0.3s;
+}
+
+.theme-toggle-label i {
+  font-size: 16px;
+  color: #333333; /* Ensure icons are visible */
+  transition: opacity 0.3s;
+}
+
+.theme-toggle-label i.fa-moon {
+  opacity: 0;
+}
+
+.theme-toggle-label i.fa-sun {
+  opacity: 1;
+  color: #f5da11;
+}
+
+.theme-toggle-label .ball {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+#theme-toggle-checkbox:checked + .theme-toggle-label .ball {
+  transform: translateX(30px);
+}
+
+#theme-toggle-checkbox:checked + .theme-toggle-label i.fa-moon {
+  opacity: 1;
+}
+
+#theme-toggle-checkbox:checked + .theme-toggle-label i.fa-sun {
+  opacity: 0;
 }
