@@ -27,4 +27,7 @@ export function setupEventHandlers(calculator) {
 
     // Add event listener for theme toggle
     document.getElementById("theme-toggle-checkbox").addEventListener("change", () => calculator.handleThemeToggle());
+
+    // Add event listener for clear history button
+    document.getElementById("clear-history").addEventListener("click", () => calculator.clearHistory());
 }
