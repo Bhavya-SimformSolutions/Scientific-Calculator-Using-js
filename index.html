@@ -18,9 +18,12 @@
         <div class="ball"></div>
       </label>
     </div>
+    <!---------->
 
+    <!-- Calculator Section -->
     <div class="calculator">
       <div class="display">
+        <button id="history-toggle" class="history-toggle"><i class="fas fa-history"></i></button>
         <input type="text" placeholder="0" id="input" disabled />
       </div>
       <div class="buttons">
@@ -67,13 +70,18 @@
         <input type="button" value="=" id="equal" />
       </div>
     </div>
+    <!---------->
 
     <!-- History Section -->
-    <div class="history">
-      <h2>History</h2>
-      <ul id="history-list"></ul>
-      <button id="clear-history">Clear History</button>
+    <div class="history" id="history-section">
+      <div class="history-content">
+        <button class="close-history" id="close-history">&times;</button>
+        <h2>History</h2>
+        <ul id="history-list"></ul>
+        <button id="clear-history">Clear History</button>
+      </div>
     </div>
+    <!---------->
 
     <script type="module" src="scripts/main.js"></script>
   </body>

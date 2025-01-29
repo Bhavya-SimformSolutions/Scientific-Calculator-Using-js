@@ -9,6 +9,7 @@ class Calculator {
         this.isSecondMode = false;
         this.input = document.getElementById("input");
         this.historyList = document.getElementById("history-list");
+        this.historySection = document.getElementById("history-section");
         this.loadHistory();
         setupEventHandlers(this);
     }
@@ -175,11 +176,6 @@ class Calculator {
         }
     }
 
-    /**
-     * Handles keyboard input events for the calculator.
-     *
-     * @param {KeyboardEvent} event - The keyboard event object.
-     */
     handleKeyboardInput(event) {
         const key = event.key;
         const validKeys = "0123456789+-*/%^().";
@@ -203,12 +199,6 @@ class Calculator {
         }
     }
 
-    /**
-     * Toggles the theme of the calculator between light and dark modes.
-     * This function checks the state of the theme toggle checkbox and applies
-     * or removes the 'dark-mode' class to various elements in the document
-     * based on whether the checkbox is checked or not.
-     */
     handleThemeToggle() {
         const isChecked = document.getElementById('theme-toggle-checkbox').checked;
         document.body.classList.toggle('dark-mode', isChecked);
@@ -230,12 +220,6 @@ class Calculator {
         });
     }
 
-    /**
-     * Adds the given expression and result to the calculation history.
-     *
-     * @param {string} expression - The mathematical expression that was evaluated.
-     * @param {string|number} result - The result of the evaluated expression.
-     */
     addToHistory(expression, result) {
         const historyItem = document.createElement("li");
         historyItem.textContent = `${expression} = ${result}`;
@@ -243,12 +227,6 @@ class Calculator {
         this.saveHistory();
     }
 
-    /**
-     * Saves the current calculation history to the local storage.
-     * The history is retrieved from the list of history items in the DOM,
-     * converted to an array of text content, and then stored as a JSON string
-     * in the local storage under the key "calculatorHistory".
-     */
     saveHistory() {
         const historyItems = [];
         this.historyList.querySelectorAll("li").forEach(item => {
@@ -257,11 +235,6 @@ class Calculator {
         localStorage.setItem("calculatorHistory", JSON.stringify(historyItems));
     }
 
-    /**
-     * Loads the calculator history from local storage and appends each history item to the history list in the DOM.
-     * Retrieves the history from local storage, parses it, and creates a list item for each entry.
-     * If no history is found in local storage, an empty array is used.
-     */
     loadHistory() {
         const historyItems = JSON.parse(localStorage.getItem("calculatorHistory")) || [];
         historyItems.forEach(item => {
@@ -271,14 +244,13 @@ class Calculator {
         });
     }
 
-    /**
-     * Clears the calculator history.
-     * This method removes all entries from the history list in the UI
-     * and deletes the "calculatorHistory" item from local storage.
-     */
     clearHistory() {
         this.historyList.innerHTML = "";
         localStorage.removeItem("calculatorHistory");
+    }
+
+    toggleHistory() {
+        this.historySection.classList.toggle("show");
     }
 }
 
