@@ -1,3 +1,12 @@
+/**
+ * Calculates the result of a mathematical expression with basic operations.
+ *
+ * @param {string} expression - The mathematical expression to evaluate.
+ * @param {boolean} isDegreeMode - If true, trigonometric functions will use degrees; otherwise, radians.
+ * @returns {number|string} The result of the evaluated expression or an error message if the expression is invalid.
+ *
+ * @throws {Error} If the expression is invalid, contains mismatched parentheses, or division by zero occurs.
+ */
 export function calculateBasicOperations(expression, isDegreeMode) {
     const precedence = { '+': 1, '-': 1, '*': 2, '/': 2, '%': 2, '^': 3 };
     const isOperator = (char) => ['+', '-', '*', '/', '%', '^'].includes(char);
@@ -171,6 +180,12 @@ export function calculateBasicOperations(expression, isDegreeMode) {
     }
 }
 
+/**
+ * Calculates the factorial of a given non-negative integer.
+ *
+ * @param {number} n - The non-negative integer for which to calculate the factorial.
+ * @returns {number} The factorial of the given number. Returns NaN if the input is negative.
+ */
 export function factorialFunction(n) {
     if (n < 0) return NaN;
     if (n === 0 || n === 1) return 1;
