@@ -5,6 +5,7 @@ class Calculator {
     constructor() {
         this.equal_pressed = 0;
         this.lastResult = null;
+        this.lastExpression = null;
         this.isDegreeMode = true;
         this.isSecondMode = false;
         this.input = document.getElementById("input");
@@ -15,15 +16,30 @@ class Calculator {
     }
 
     handleInputButtonClick(value) {
+        const operators = ['+', '-', '*', '/', '%'];
+
         if (this.equal_pressed === 1) {
             this.equal_pressed = 0;
         }
-        this.input.value += value;
+
+        if (operators.includes(this.input.value.slice(-1)) && operators.includes(value)) {
+            // Replace the last operator with the new one
+            this.input.value = this.input.value.slice(0, -1) + value;
+        } else {
+            this.input.value += value;
+        }
     }
 
     handleEqualButtonClick() {
         let inp_val = this.input.value;
-        if (this.lastResult !== null && /^[+\-*/%]/.test(inp_val)) {
+        if (this.equal_pressed === 1 && this.lastExpression) {
+            inp_val = this.lastExpression;
+        } else {
+            this.lastExpression = inp_val;
+        }
+
+        // Handle case where input starts with a negative number after a previous calculation
+        if (this.lastResult !== null && /^[+\-*/%]/.test(inp_val) && !/^-/.test(inp_val)) {
             inp_val = `${this.lastResult}${inp_val}`;
         }
 
@@ -31,8 +47,10 @@ class Calculator {
             let solution = calculateBasicOperations(inp_val, this.isDegreeMode);
             if (typeof solution === 'number') {
                 this.lastResult = solution;
-                this.input.value = Number.isInteger(solution) ? solution : solution.toFixed(2);
-                this.addToHistory(inp_val, solution);
+                this.input.value = Number.isInteger(solution) ? solution : solution.toFixed(4);
+                if (this.equal_pressed === 0 || inp_val !== this.lastExpression) {
+                    this.addToHistory(inp_val, solution);
+                }
             } else {
                 alert(solution);
             }
@@ -45,7 +63,9 @@ class Calculator {
 
     handleClearButtonClick() {
         this.input.value = "";
-        this.lastResult = null;
+        this.lastResult = null; 
+        this.lastExpression = null; 
+        this.equal_pressed = 0; 
     }
 
     handleEraseButtonClick() {
